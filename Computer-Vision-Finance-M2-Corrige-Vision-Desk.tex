@@ -61,17 +61,18 @@ Ouvrir dans Colab & \href{https://colab.research.google.com/github/LikhitaYerra/
 
 Le notebook couvre : images finance synthétiques, split par document, fine-tune
 de tête ViT vs baseline majorité, contrat JSON (\texttt{vision.extract}), quatre
-stubs MCP, trace grounded (\texttt{outputs/grounded\_trace.json}) et refus
-(\texttt{outputs/refusal\_trace.json}). Les groupes peuvent remplacer les images
+stubs MCP, plus traces grounded et refus. Les sorties de référence sont dans
+\texttt{lab-reference/} (ci-dessous). Les groupes peuvent remplacer les images
 synthétiques par leurs captures si le protocole reste identique.
 
 \subsection{Exécution enregistrée (notebook, \texttt{SEED=42})}
 \label{sec:lab-run}
 
-Le code du notebook Colab a été exécuté de bout en bout (CPU local, mars 2026 ;
+Le code du notebook Colab a été exécuté de bout en bout (CPU local, octobre 2026 ;
 même logique et seed que sur
 \href{https://colab.research.google.com/github/LikhitaYerra/vision-desk/blob/main/vision_desk_colab.ipynb}{Colab}).
-Les artefacts sont copiés dans le dépôt sous \texttt{lab-reference/}.
+Les artefacts sont copiés dans le dépôt sous \texttt{lab-reference/}
+(\texttt{metrics.json}, \texttt{grounded\_trace.json}, \texttt{refusal\_trace.json}).
 
 \begin{center}
 \renewcommand{\arraystretch}{1.15}
@@ -139,8 +140,8 @@ en échec. Je refuse d'inventer un symbole. Relancer avec un crop plus large / a
 \textbf{Choix} & \textbf{Valeur} \\
 \midrule
 Entrée & Captures de pages / charts, 2--4 classes \\
-Split & Par document (80\,\% train / 20\,\% held-out documents) \\
-Modèle & ViT-Small (ou Tiny) préentraîné + tête fine-tunée \\
+Split & Par document (labo : 75\,\% / 25\,\% docs held-out ; 96 / 32 images) \\
+Modèle & ViT-Tiny (ou Small) préentraîné + tête fine-tunée \\
 Baseline & Classe majoritaire, ou logits sur pixels réduits (séance~1) \\
 JSON & \texttt{type}, \texttt{confidence}, \texttt{ticker?} (nullable), \texttt{fields} \\
 MCP & \texttt{vision.classify}, \texttt{vision.extract}, \texttt{market.lookup}, \texttt{knowledge.search} \\
@@ -157,13 +158,14 @@ LLM & N'affirme un fait que s'il apparaît dans un JSON d'outil \\
   "confidence": 0.989,
   "ticker": "AAPL",
   "fields": {
-    "title": "AAPL daily",
+    "title": "candlestick_chart__doc05_p0",
     "period": "2024"
   },
   "source_tool": "vision.extract"
 }
 \end{verbatim}
 
+Même payload que l'exemple labo ci-dessus (title = stem de l'image).
 \texttt{ticker} peut être \texttt{null}. Un JSON invalide (champ requis manquant)
 est un échec pipeline même si la classe est correcte.
 
@@ -224,7 +226,7 @@ Je refuse d'inventer un symbole. Relancer avec un crop plus large / autre DPI. �
   \item affirmation LLM sans tool call\,;
   \item appeler \texttt{vision.*} puis ignorer le JSON\,;
   \item présenter un glossaire RAG comme une extraction OCR\,;
-  \item tools d'écriture dans le labo.
+  \item tools d'écriture / mutation dans le labo (MCP en lecture seule uniquement).
 \end{itemize}
 
 \section{Limites types (à recopier dans la note 4 pages)}

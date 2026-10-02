@@ -61,16 +61,17 @@ Open in Colab & \href{https://colab.research.google.com/github/LikhitaYerra/visi
 
 The notebook implements: synthetic finance images, split by document, ViT head
 fine-tune vs majority baseline, JSON contract (\texttt{vision.extract}), four MCP
-stubs, a grounded trace (\texttt{outputs/grounded\_trace.json}) and a refusal
-(\texttt{outputs/refusal\_trace.json}). Groups may replace synthetic data with
-their own captures if the protocol stays the same.
+stubs, plus grounded and refusal traces. Reference outputs live in
+\texttt{lab-reference/} (see below). Groups may replace synthetic data with their
+own captures if the protocol stays the same.
 
 \subsection{Recorded run (executed notebook, \texttt{SEED=42})}
 \label{sec:lab-run}
 
-The Colab notebook code was executed end-to-end (local CPU, March 2026; same
+The Colab notebook code was executed end-to-end (local CPU, October 2026; same
 logic and seed as \href{https://colab.research.google.com/github/LikhitaYerra/vision-desk/blob/main/vision_desk_colab.ipynb}{Colab}).
-Artifacts are copied in the repo under \texttt{lab-reference/}.
+Artifacts are copied in the repo under \texttt{lab-reference/}
+(\texttt{metrics.json}, \texttt{grounded\_trace.json}, \texttt{refusal\_trace.json}).
 
 \begin{center}
 \renewcommand{\arraystretch}{1.15}
@@ -137,8 +138,8 @@ failed. I refuse to invent a symbol. Retry with a wider crop / different DPI.''
 \textbf{Choice} & \textbf{Value} \\
 \midrule
 Input & Page / chart captures, 2--4 classes \\
-Split & By document (80\,\% train / 20\,\% held-out documents) \\
-Model & Pretrained ViT-Small (or Tiny) + fine-tuned head \\
+Split & By document (lab: 75\,\% / 25\,\% held-out docs; 96 / 32 images) \\
+Model & Pretrained ViT-Tiny (or Small) + fine-tuned head \\
 Baseline & Majority class, or logits on reduced pixels (session~1) \\
 JSON & \texttt{type}, \texttt{confidence}, \texttt{ticker?} (nullable), \texttt{fields} \\
 MCP & \texttt{vision.classify}, \texttt{vision.extract}, \texttt{market.lookup}, \texttt{knowledge.search} \\
@@ -155,13 +156,14 @@ LLM & Asserts a fact only if it appears in a tool JSON \\
   "confidence": 0.989,
   "ticker": "AAPL",
   "fields": {
-    "title": "AAPL daily",
+    "title": "candlestick_chart__doc05_p0",
     "period": "2024"
   },
   "source_tool": "vision.extract"
 }
 \end{verbatim}
 
+Same payload as the recorded lab sample above (title = image stem).
 \texttt{ticker} may be \texttt{null}. Invalid JSON (missing required field)
 is a pipeline failure even if the class is correct.
 
@@ -222,7 +224,7 @@ I refuse to invent a symbol. Retry with a wider crop / different DPI.''
   \item LLM claim without a tool call;
   \item calling \texttt{vision.*} then ignoring the JSON;
   \item presenting a RAG glossary as OCR / extraction;
-  \item write tools inside the lab.
+  \item write / mutate tools inside the lab (read-only MCP only).
 \end{itemize}
 
 \section{Typical limits (copy into the 4-page note)}
