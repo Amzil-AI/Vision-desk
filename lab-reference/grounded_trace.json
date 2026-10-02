@@ -1,0 +1,41 @@
+{
+  "status": "grounded",
+  "answer": "vision.classify labels this as candlestick_chart (score 0.989). vision.extract returns ticker=AAPL. market.lookup: Apple Inc. (USD). I assert no closing price: no price field is present in the JSON.",
+  "trace": [
+    {
+      "tool": "vision.classify",
+      "out": {
+        "class": "candlestick_chart",
+        "score": 0.989
+      }
+    },
+    {
+      "tool": "vision.extract",
+      "out": {
+        "type": "candlestick_chart",
+        "confidence": 0.989,
+        "ticker": "AAPL",
+        "fields": {
+          "title": "candlestick_chart__doc05_p0",
+          "period": "2024"
+        },
+        "source_tool": "vision.extract"
+      }
+    },
+    {
+      "tool": "market.lookup",
+      "out": {
+        "name": "Apple Inc.",
+        "currency": "USD",
+        "sector": "Technology"
+      }
+    },
+    {
+      "tool": "knowledge.search",
+      "out": {
+        "query": "candlestick_chart",
+        "snippet": "OHLC bars used in technical charting."
+      }
+    }
+  ]
+}

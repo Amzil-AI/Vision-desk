@@ -37,7 +37,8 @@
 \section{Lecture du corrigé}
 
 Ce document répond à la \textbf{tâche fermée} du cas avec un protocole de
-référence et des traces types. Les F1 d'exemple sont pédagogiques.
+référence et des traces types. La section~\ref{sec:lab-run} consigne les métriques
+d'une exécution du notebook (\texttt{SEED=42}). Les autres F1 restent pédagogiques.
 Non négociable : ViT (pas LSTM), schéma JSON avant le test, quatre tools MCP,
 aucune affirmation inventée.
 
@@ -63,6 +64,56 @@ de tête ViT vs baseline majorité, contrat JSON (\texttt{vision.extract}), quat
 stubs MCP, trace grounded (\texttt{outputs/grounded\_trace.json}) et refus
 (\texttt{outputs/refusal\_trace.json}). Les groupes peuvent remplacer les images
 synthétiques par leurs captures si le protocole reste identique.
+
+\subsection{Exécution enregistrée (notebook, \texttt{SEED=42})}
+\label{sec:lab-run}
+
+Le code du notebook Colab a été exécuté de bout en bout (CPU local, mars 2026 ;
+même logique et seed que sur
+\href{https://colab.research.google.com/github/LikhitaYerra/vision-desk/blob/main/vision_desk_colab.ipynb}{Colab}).
+Les artefacts sont copiés dans le dépôt sous \texttt{lab-reference/}.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{4.2cm}p{10.4cm}@{}}
+\toprule
+\textbf{Métrique} & \textbf{Valeur (documents held-out)} \\
+\midrule
+Images train / val & 96 / 32 (8 documents val) \\
+F1 macro baseline majorité & 0{,}056 \\
+F1 macro ViT-Tiny (tête, 8 epochs) & 1{,}000 \\
+Bat la baseline ? & oui \\
+Fichiers & \texttt{metrics.json}, \texttt{grounded\_trace.json}, \texttt{refusal\_trace.json} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+{\color{warn}\textbf{Lecture.}
+Un F1 macro $=1{,}0$ sur les templates \emph{synthétiques} est attendu : layouts
+propres et classes visuellement distinctes. Des captures Bloomberg / PDF réelles
+donneront un F1 plus bas et une matrice de confusion plus riche --- un résultat
+négatif honnête est acceptable si le split par document et les traces MCP sont
+corrects.}
+
+\paragraph{Exemple \texttt{vision.extract} (val, avec ticker).}
+\begin{verbatim}
+{
+  "type": "candlestick_chart",
+  "confidence": 0.989,
+  "ticker": "AAPL",
+  "fields": {"title": "candlestick_chart__doc05_p0", "period": "2024"},
+  "source_tool": "vision.extract"
+}
+\end{verbatim}
+
+\paragraph{Réponse grounded (issue de \texttt{lab-reference/grounded\_trace.json}).}
+« \texttt{vision.classify} classe en \texttt{candlestick\_chart} (score 0{,}989).
+\texttt{vision.extract} renvoie \texttt{ticker=AAPL}. \texttt{market.lookup} :
+Apple Inc.\ (USD). Je n'affirme aucun prix de clôture : aucun champ prix dans le JSON. »
+
+\paragraph{Refus (issue de \texttt{lab-reference/refusal\_trace.json}).}
+« Je ne peux pas confirmer de ticker : extraction null ou \texttt{market.lookup}
+en échec. Je refuse d'inventer un symbole. Relancer avec un crop plus large / autre DPI. »
 
 \section{Réponse à la tâche fermée (structure)}
 
@@ -103,7 +154,7 @@ LLM & N'affirme un fait que s'il apparaît dans un JSON d'outil \\
 \begin{verbatim}
 {
   "type": "candlestick_chart",
-  "confidence": 0.91,
+  "confidence": 0.989,
   "ticker": "AAPL",
   "fields": {
     "title": "AAPL daily",
@@ -124,7 +175,8 @@ est un échec pipeline même si la classe est correcte.
 \toprule
 \textbf{Modèle} & \textbf{F1 macro (held-out)} & \textbf{Lecture} \\
 \midrule
-Baseline majorité & $\approx$ 0{,}25--0{,}40 & Selon déséquilibre \\
+Labo de réf. (synth.) & maj.\ 0{,}06 / ViT 1{,}00 & Voir \S\ref{sec:lab-run} ; pas une promesse prod. \\
+Baseline majorité (données réelles) & $\approx$ 0{,}25--0{,}40 & Selon déséquilibre \\
 ViT fine-tune & nettement plus haut & Si layout stable \\
 ViT sur nouveau template & souvent en baisse & Domain shift attendu \\
 \bottomrule
@@ -141,14 +193,14 @@ Si le held-out mélange des pages du même PDF que le train, le F1 est gonflé
 
 \paragraph{Tools.}
 \begin{enumerate}
-  \item \texttt{vision.classify} $\rightarrow$ \texttt{\{class: candlestick\_chart, score: 0.91\}}
+  \item \texttt{vision.classify} $\rightarrow$ \texttt{\{class: candlestick\_chart, score: 0.989\}}
   \item \texttt{vision.extract} $\rightarrow$ JSON ci-dessus (\texttt{ticker: "AAPL"})
   \item \texttt{market.lookup("AAPL")} $\rightarrow$ métadonnées (nom, devise) --- stub OK
   \item \texttt{knowledge.search("candlestick")} $\rightarrow$ glossaire court --- stub OK
 \end{enumerate}
 
 \paragraph{Réponse finale acceptable.}
-« \texttt{vision.classify} classe l'image comme graphique en chandeliers (0{,}91).
+« \texttt{vision.classify} classe l'image comme graphique en chandeliers (0{,}989).
 \texttt{vision.extract} renvoie \texttt{ticker=AAPL}.
 \texttt{market.lookup} confirme les métadonnées Apple Inc.
 Je n'affirme aucun prix de clôture : aucun champ prix n'est présent dans le JSON. »

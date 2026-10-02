@@ -1,0 +1,39 @@
+{
+  "status": "refusal",
+  "answer": "I cannot confirm a ticker: extraction returned null or market.lookup failed. I refuse to invent a symbol. Retry with a wider crop / different DPI.",
+  "trace": [
+    {
+      "tool": "vision.classify",
+      "out": {
+        "class": "candlestick_chart",
+        "score": 0.993
+      }
+    },
+    {
+      "tool": "vision.extract",
+      "out": {
+        "type": "candlestick_chart",
+        "confidence": 0.993,
+        "ticker": null,
+        "fields": {
+          "title": "candlestick_chart__doc06_p0",
+          "period": "2024"
+        },
+        "source_tool": "vision.extract"
+      }
+    },
+    {
+      "tool": "market.lookup",
+      "out": {
+        "error": "null_ticker"
+      }
+    },
+    {
+      "tool": "knowledge.search",
+      "out": {
+        "query": "candlestick_chart",
+        "snippet": "OHLC bars used in technical charting."
+      }
+    }
+  ]
+}

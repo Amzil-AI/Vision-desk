@@ -1,0 +1,16 @@
+{
+  "n_train": 96,
+  "n_val": 32,
+  "n_val_docs": 8,
+  "majority_macro_f1": 0.0556,
+  "vit_val_macro_f1": 1.0,
+  "beats_baseline": true,
+  "model": "vit_tiny_patch16_224 (head fine-tune)",
+  "split": "by document",
+  "tools": [
+    "vision.classify",
+    "vision.extract",
+    "market.lookup",
+    "knowledge.search"
+  ]
+}
