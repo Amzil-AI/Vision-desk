@@ -4,7 +4,7 @@ Capstone case for **Computer Vision in Finance** (Master's Finance, Data & AI).
 
 Parallel to Signal Desk (LSTM): here students fine-tune a **ViT**, expose it via **MCP** tools, and judge whether an LLM answer is **grounded** or invented.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LikhitaYerra/vision-desk/blob/main/vision_desk_colab.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Amzil-AI/Vision-desk/blob/main/vision_desk_colab.ipynb)
 
 ## Fastest path (Colab)
 

@@ -1,0 +1,4 @@
+vision_desk_lab/
+__pycache__/
+*.pyc
+.DS_Store
