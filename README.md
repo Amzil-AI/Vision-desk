@@ -1,37 +1,50 @@
 # Vision Desk
 
-Capstone case for **Computer Vision in Finance** (Master's Finance, Data & AI).
+Capstone for **Computer Vision in Finance** (Master's Finance, Data & AI).
 
-Parallel to Signal Desk (LSTM): here students fine-tune a **ViT**, expose it via **MCP** tools, and judge whether an LLM answer is **grounded** or invented.
+Parallel to Signal Desk (LSTM): fine-tune a **ViT**, expose it via **MCP** tools, and check whether an LLM answer is **grounded** or invented.
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Amzil-AI/Vision-desk/blob/main/vision_desk_colab.ipynb)
 
-## Fastest path (Colab)
+## Quick start
 
-1. Open the badge above  
-2. Runtime → GPU (T4) if available → Run all  
-3. Check: document split, ViT vs majority baseline, grounded trace, refusal
+1. Open the Colab badge above  
+2. Runtime → GPU (T4) if available → **Run all**  
+3. Check: document split, ViT vs majority baseline, grounded trace, refusal  
 
-## Files
+```bash
+pip install -r requirements.txt
+# or use the notebook in Colab / Jupyter
+```
 
-| File | Audience |
+## Layout
+
+```
+vision_desk_colab.ipynb   # student lab
+requirements.txt
+case/                     # student brief (FR + EN, PDF + TeX)
+solution/                 # teacher solution (FR + EN) + lab-reference/
+```
+
+| Path | Audience |
 |---|---|
-| `vision_desk_colab.ipynb` | Student lab (Colab) |
-| `Computer-Vision-Finance-M2-Cas-Vision-Desk.pdf` | Student brief (FR) |
-| `Computer-Vision-Finance-M2-Cas-Vision-Desk-EN.pdf` | Student brief (EN) |
-| `Computer-Vision-Finance-M2-Corrige-Vision-Desk.pdf` | Teacher solution (FR) |
-| `Computer-Vision-Finance-M2-Corrige-Vision-Desk-EN.pdf` | Teacher solution (EN) |
-
-Matching `.tex` sources are included for edits.
+| `vision_desk_colab.ipynb` | Students |
+| `case/*.pdf` | Students |
+| `solution/*.pdf` | Teachers |
+| `solution/lab-reference/` | Recorded metrics & MCP traces (`SEED=42`) |
 
 ## Closed task
 
-Build a Vision Desk on a financial image: what can the vision model assert, which MCP tool justifies each claim, and what do you refuse when a tool fails?
+Build a Vision Desk on a financial image:
+
+1. What can the vision model assert?  
+2. Which MCP tool / JSON field justifies each claim?  
+3. What do you refuse when a tool fails or returns null?  
 
 ## Lab outline
 
-1. Synthetic finance images (candlestick / line / bilan / notes)  
+1. Synthetic finance images (candlestick / line / balance sheet / notes)  
 2. Split **by document**  
 3. Fine-tune `vit_tiny_patch16_224` (head)  
 4. JSON contract via `vision.extract`  
-5. MCP stubs + grounded answer + refusal
+5. MCP stubs → grounded answer + refusal  
